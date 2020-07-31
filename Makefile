@@ -1,4 +1,5 @@
-CXXFLAGS= -std=c++17 -Wall -O
+CXXSTD ?= c++17
+CXXFLAGS= -std=$(CXXSTD) -Wall -O
 CXXFLAGS += -MMD
 
 check: test_rectangular test_nocompile
@@ -6,18 +7,30 @@ check: test_rectangular test_nocompile
 
 TEST_OBJS=test_main.o test_rectangular.o test_checked_rectangular.o test_rectangular_iterator.o
 test_rectangular: $(TEST_OBJS)
-	$(LINK.cc) -o $@ $(TEST_OBJS)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $(TEST_OBJS)
 
 clean:
 	rm -f *.o *.d errs test_rectangular
 
-test_nocompile: 
-	@echo "Compile command: $(COMPILE.cc)"
+test_nocompile:
+	@echo "Compile command: $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c"
+	@echo "Compiler version:" `$(CXX) --version`
 	@ret=0; for i in test_nc_*.cpp; do \
 		echo "Testing $$i for not compiling ...\c" ; \
-		if $(COMPILE.cc) $$i >/dev/null 2>&1 ; then echo "Oops! it compiled"; ret=1; fi ;\
-		echo "OK" ; \
+		if $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $$i >/dev/null 2>&1 ; then \
+			echo "Oops! it compiled"; ret=1; else echo "OK" ; \
+		fi \
 	done; exit $$ret
+
+list_compilers:
+	@echo Available Compilers:
+	@for p in /usr/bin/*++* /usr/local/bin/*++*; do \
+		case "$$p" in *\* | *filt | *lex++*) continue;; esac ;\
+		ls -l $$p ; \
+		$$p --version 2>&1 | sed "s/^/     /"; \
+		echo ; \
+	done
+
 
 # For dependency tracking
 # gnu make version
