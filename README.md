@@ -74,9 +74,17 @@ MacOs 10.13| XCode 10.0 (Clang 6) | -std=c++11 | Pass
 MacOs 10.13| XCode 10.0 (Clang 6) | -std=c++14 | Pass
 MacOs 10.13| XCode 10.0 (Clang 6) | -std=c++17 | Pass
 FreeBSD 10.4 | Clang 3.4 | -std=c++11 | Pass
+FreeBSD 11.4 | Clang 10.0 | -std=c++11 | Pass
+FreeBSD 11.4 | Clang 10.0 | -std=c++14 | Pass
+FreeBSD 11.4 | Clang 10.0 | -std=c++17 | Pass
+FreeBSD 11.4 | g++ 9.3 | -std=c++11 | Pass
+FreeBSD 11.4 | g++ 9.3 | -std=c++14 | Pass
+FreeBSD 11.4 | g++ 9.3 | -std=c++17 | Pass
 Ubuntu 16 | g++ 5.4 | -std=c++11 | Pass
 Ubuntu 16 | g++ 5.4 | -std=c++14 | Pass
 Ubuntu 16 | g++ 5.4 | -std=c++17 | Pass
+
+GitHub CI status: ![C/C++ CI](https://github.com/gnbond/Rectangular/workflows/C/C++%20CI/badge.svg)
 
 # Class Documentation
 
