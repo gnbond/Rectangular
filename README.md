@@ -62,7 +62,7 @@ This is a single header file containing class templates, no code to be compiled 
 
 ## Unit testing
 
-Unit tests are written using [Catch](http://catch-lib.net/), which is a single (large!! 650k) header file.  The `catch.hpp` file is included directly in this project (and makes up 98% of the linecount).  One downside is that the `test_main.o` file can take a long time to compile (500Mb process size, 30-60 CPU seconds), so take care if you are running the tests inside a smallish Docker container.
+Unit tests are in the `tests` directory.  Tests are written using [Catch2](http://catch-lib.net/) test framework, which is a single (large!! 650k) header file.  The `catch.hpp` file is included directly in this project (and makes up 98% of the linecount).  One downside is that the `test_main.o` file can take a long time to compile (500Mb process size, 30-60 CPU seconds), so take care if you are running the tests inside a smallish Docker container.
 
 Filenames starting with `test_` are the unit tests. Filenames starting with `test_nc_` are code snippets that should not compile.  A Makefile is included, and is needed only for the unit tests.   `make check` will compile and run the unit tests and confirm the `test_nc` code does not compile.  Hint: when porting to a new compiler, it's worth manually checking that the `test_nc_` tests fail for the reason expected, not because of some other unexpected system dependency!
 

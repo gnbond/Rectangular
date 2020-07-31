@@ -14,4 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Compiler List
-      run: make list_compilers  
+      run: make -C tests list_compilers  

@@ -14,5 +14,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make Clang-9/C++11 check
-      run: make CXX=clang++-9 CXXSTD=c++11 check
+      run: make -C tests CXX=clang++-9 CXXSTD=c++11 check
     
