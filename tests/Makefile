@@ -1,5 +1,6 @@
 CXXSTD ?= c++17
 CXXFLAGS= -std=$(CXXSTD) -Wall -O
+CPPFLAGS=-I..
 CXXFLAGS += -MMD
 
 check: test_rectangular test_nocompile
