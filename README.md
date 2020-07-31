@@ -19,7 +19,7 @@ Bugs/Comments/Pull requests to https://github.com/gnbond/Rectangular
 
 ## What this is not
 
-This is not a linear algebra package, and not intended for matrix atrithmatic.  Use something like [Eigen](https://gitlab.com/libeigen/eigen) or see the comparison listing at [Wikipedia](https://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries) for actual matrix libraries.
+This is not a linear algebra package, and not intended for matrix arithmetic.  Use something like [Eigen](https://gitlab.com/libeigen/eigen) or see the comparison listing at [Wikipedia](https://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries) for actual matrix libraries.
 
 It's not a big data library like `NumPy`, again there are C++ alternatives (or just use NumPy, not everything has to be in C++).
 
@@ -29,7 +29,7 @@ Iterating over rows or columns is not provided, but could be fairly easily added
 
 ## What's in a name?
 
-Standard library type names are `lower_case_underscore_separated` so this should follow that convention. Names must start with a letter so something like `2d_array` is out, and `array_2d` looks awkward. Both (by similarity to `std::array<>`) imply compile-time fixed size.  `matrix` implies linear algebra, and this is not an arethmetic type. `rectangle` sounds more like a shape from an introductory OO tutorial than a container.  So I settled on `gnb::rectangular`, in the `gnb::` namespace because library bits should not be in global namespace.
+Standard library type names are `lower_case_underscore_separated` so this should follow that convention. Names must start with a letter so something like `2d_array` is out, and `array_2d` looks awkward. Both (by similarity to `std::array<>`) imply compile-time fixed size.  `matrix` implies linear algebra, and this is not an arithmetic type. `rectangle` sounds more like a shape from an introductory OO tutorial than a container.  So I settled on `gnb::rectangular`, in the `gnb::` namespace because library bits should not be in global namespace.
 
 ## A note on co-ordinate systems
 
@@ -45,14 +45,14 @@ You can visualise this as an image with the following layout, x increasing acros
 
 ## C++ compatibility
 
-These templates work with C++11, C++14 and C++17.  This has been tested so far on Clang 6 and g++ 5.4, neither of which have full C++17 support, so some remote possibility that *real* C++17 compilers might object.
+These templates work with C++11, C++14 and C++17.  This has been tested on Clang (versions 6, 9 & 10) and g++ (versions 5.4 and 8.4) on a variety of hosts (though host OS should really not matter).
 
 For `checked_rectangular` we would like to prohibit any use of the RowProxy object other than immediate dereference via `[]`.  Mostly, this works as written for C++11 and C++14, but for C++17 the following will actually compile, even though it is an error on C++14.  I think this is because of the changed Copy Elision requirements, see [cppreference.com](https://en.cppreference.com/w/cpp/language/copy_elision):
 
     gnb::checked_rectangular<int> cr{3,3};
     auto row{cr[1]};
 
-Alas, XCode 10 clang supports enough of C++17 to make this compile, but not enough (missing the `__cpp_guaranteed_copy_elision` macro) to work around this problem.  Of course, a complete and conforming C++17 compiler might behave differently and the above behaviour might be due to incomplete C++17 support.
+This causes a false-positive in the `test_nc_checked_proxy.cpp` test, so that test has to be disabled for C++17. Alas, XCode 10 clang supports enough of C++17 to make this compile, but not enough (missing the `__cpp_guaranteed_copy_elision` macro) to work around this problem in the official manner, so the unit test has some Mac-specific knowledge. 
 
 
 ## Building 
@@ -147,8 +147,8 @@ Iterators are possibly invalidated by `resize()` operation, see below.
 
 `resize(size_t new_height, size_t new_width, T value = T() )`
  - Change the size and/or shape of the `rectangular` in-place.  
- - If new size() (i.e. new_height * new_width) is less than existing size(), contents are destroyed starting from the back (i.e. `r[height()-1][width()-1]`).  
-  - If new size() is greater than existing size(), then new elements are constructed at the back (as if by `std::vector::emplace_back()`) as copies of the given value.
+ - If new size() (i.e. new_height * new_width) is less than existing size(), excess elements are destroyed at the back (i.e. starting with `r[height()-1][width()-1]`).  
+ - If new size() is greater than existing size(), then new elements are constructed at the back (as if by `std::vector::emplace_back()`) as copies of the given value.
     - In both these cases, contents may be copied/moved; `end()` iterator will certainly be invalidated and other iterators may also be invaildated.
  - If new size() equals old size(), no contents are created or destroyed, all existing data is retained but the "shape" of the `rectangular` changes.  No data is copied/moved and this runs in constant time.  Iterators are not invalidated in this case.
 
