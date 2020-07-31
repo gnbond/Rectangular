@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name Compiler List
+    - name: Compiler List
       run: make list_compilers
     - name: make C++17 check
       run: make check
