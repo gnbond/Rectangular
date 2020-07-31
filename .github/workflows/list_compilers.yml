@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: List Compilers
 
 on:
   push:
@@ -14,11 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Compiler List
-      run: make list_compilers
-    - name: make C++17 check
-      run: make check
-    - name: make C++14 check
-      run: make clean && make CXXSTD=c++14 check
-    - name: make C++11 check
-      run: make clean && make CXXSTD=c++11 check
-    
+      run: make list_compilers  

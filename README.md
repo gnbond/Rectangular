@@ -83,8 +83,12 @@ FreeBSD 11.4 | g++ 9.3 | -std=c++17 | Pass
 Ubuntu 16 | g++ 5.4 | -std=c++11 | Pass
 Ubuntu 16 | g++ 5.4 | -std=c++14 | Pass
 Ubuntu 16 | g++ 5.4 | -std=c++17 | Pass
-
-GitHub CI status: ![C/C++ CI](https://github.com/gnbond/Rectangular/workflows/C/C++%20CI/badge.svg)
+GitHub CI / Ubuntu 18 | g++ 8.4 | -std=c++11| ![GCC / C++11](https://github.com/gnbond/Rectangular/workflows/GCC%20/%20C++11/badge.svg)
+GitHub CI / Ubuntu 18 | g++ 8.4 | -std=c++14| ![GCC / C++14](https://github.com/gnbond/Rectangular/workflows/GCC%20/%20C++14/badge.svg)
+GitHub CI / Ubuntu 18 | g++ 8.4 | -std=c++17| ![GCC / C++17](https://github.com/gnbond/Rectangular/workflows/GCC%20/%20C++17/badge.svg)
+GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++11| ![Clang / C++11](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++11/badge.svg)
+GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++14| ![Clang / C++14](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++14/badge.svg)
+GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++17| ![Clang / C++17](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++17/badge.svg)
 
 # Class Documentation
 
