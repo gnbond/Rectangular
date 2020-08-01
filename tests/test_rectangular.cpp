@@ -28,6 +28,22 @@ TEST_CASE("Create [0,0]", "[rectangular]") {
     REQUIRE(i.size() == 0);
 }
 
+TEST_CASE("Create from initializer list", "[rectangular]") {
+    R i{3,2, {10, 11, 12, 13, 14, 15}};
+ 
+    REQUIRE(i.height() == 3);
+    REQUIRE(i.width() == 2);
+    REQUIRE(i.at(0,0) == 10);
+    REQUIRE(i.at(0,1) == 11);
+    REQUIRE(i.at(1,0) == 12);
+    REQUIRE(i.at(2,1) == 15);
+}    
+
+TEST_CASE("initializer_list throws", "[rectangular]") {
+    REQUIRE_THROWS_AS( (R{2,2, {0,1,2}} ), std::out_of_range);
+    REQUIRE_THROWS_AS( (R{2,2, {0,1,2,3,4}} ), std::out_of_range);
+}
+
 TEST_CASE("rectangular access", "[rectangular]") {
     R i{2, 3};
 

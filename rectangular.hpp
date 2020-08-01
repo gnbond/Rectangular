@@ -57,6 +57,11 @@ class rectangular {
                 m_data.insert(begin(), b, e);
                 if (m_data.size() != height * width) throw std::out_of_range("rectangular create");
         }
+        explicit rectangular(size_type height, size_type width, std::initializer_list<value_type> il) :
+            m_height{height}, m_width{width},
+            m_data{il} {
+                if (m_data.size() != height * width) throw std::out_of_range("rectangular create");
+        }
 
         // Default dtor/copy/assign/move OK
 
@@ -172,6 +177,9 @@ class checked_rectangular : public rectangular<T, Allocator> {
         template <typename InputIterator>
         explicit checked_rectangular(size_type height, size_type width, InputIterator b, InputIterator e) 
             : Base(height, width, b, e) {}
+        explicit checked_rectangular(size_type height, size_type width, std::initializer_list<value_type> il)
+            : Base(height, width, il) {}
+
         // Default dtor/copy/assign/move OK
 
         RowProxy<Base> operator[](size_type y) { return RowProxy<Base>(*this, y); }

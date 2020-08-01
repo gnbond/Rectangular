@@ -43,9 +43,24 @@ You can visualise this as an image with the following layout, x increasing acros
     .                 .                 .
     r[height-1][0] .. r[height-1][x] .. r[height-1][width-1]
 
+## Invariants and exceptions: To Throw or not to Throw?
+
+In a 1-D `vector<>` it is simple to add or remove elements at will without affecting the integrity of the container.  For a 2-D container, it is important to maintain the invariant that `size() == height() * width()`.  This is why `append()` or `pop_front()` are not supported operations.  The only way to change the size of a `rectangular` is via `.resize()`, which has well-defined semantics regarding added or superfluous contents and will maintain the invariant.
+
+The constructors that use a range to specify the initial contents (iterator or initializer_list) must also maintain the invariant.  There are three possible approaches in these cases:
+ 1. Require the user to specify `height` and `width` explicitly, and insist on exactly `height x width` elements in the initializer.
+ 2. Require the user to specify `height` and `width` explicitly, and handle missing / excess elements in the initializer by use of default value if missing or ignoring any excess values.
+ 3. Require the user to specify the width only, and calculate the height based on the length of the initializer.  This is how native C/C++ 2-D arrays work.  In the case where the number of initializers is not an exact multiple of the width, this can either throw or use default values to make up to a full row.
+
+ The `rectangular` class takes the first approach - insist on exactly the right number of initializer elements.  This may be a bit less flexible, but will catch a class of errors that other approaches may paper over.  If client code knows there is the possibility that the initializer length is not correct, then this can be explicitly coded for, something like this (assuming source has RandomAccessIterators):
+ ```C++
+    rectangular<int> r{3, 3, 0};
+    std::copy(source.begin(), std::min(source.end(), source.begin() + r.size()), r.begin());
+```
+
 ## C++ compatibility
 
-These templates work with C++11, C++14 and C++17.  This has been tested on Clang (versions 6, 9 & 10) and g++ (versions 5.4 and 8.4) on a variety of hosts (though host OS should really not matter).
+These templates work with C++11, C++14 and C++17.  This has been tested on Clang (versions 6, 9 & 10) and g++ (versions 5.4, 8.4 and 9.3) on a variety of hosts (though host OS should really not matter).
 
 For `checked_rectangular` we would like to prohibit any use of the RowProxy object other than immediate dereference via `[]`.  Mostly, this works as written for C++11 and C++14, but for C++17 the following will actually compile, even though it is an error on C++14.  I think this is because of the changed Copy Elision requirements, see [cppreference.com](https://en.cppreference.com/w/cpp/language/copy_elision):
 
@@ -101,6 +116,7 @@ GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++17| ![Clang / C++17](https://github.
         rectangular();
         explicit rectangular(size_t height, size_t width, T value = T());
         template <typename Iter> explicit rectangular(size_t height, size_t width, Iter begin, Iter end); // may throw
+        explicit rectangular(size_t height, size_t width, std::initializer_list<T> il); // may throw
 
         // Destructor, copy & move constructors and assignment operators are default
 
@@ -131,6 +147,13 @@ GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++17| ![Clang / C++17](https://github.
 
 `template <typename Iter> explicit rectangular(size_t height, size_t width, Iter begin, Iter end)`
   - May be constructed from an iterator range.  Will throw `std::out_of_range` if there are not exactly (height*width) entries in the range. 
+
+`explicit rectangular(size_t height, size_t width, std::initializer_list<T> il)`
+ - May be constructed from an initializer list. Will throw `std::out_of_range` if there are not exactly (height*width) entries in the initialzer_list.  Usage like this:
+ ```
+    rectangular<int> R{2, 2, {5, 6, 7, 8}};
+ ``` 
+
 
 ### Iterators
 

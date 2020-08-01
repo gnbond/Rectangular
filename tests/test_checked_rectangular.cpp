@@ -40,6 +40,22 @@ TEST_CASE("Create checked rectangular [0,0]", "[checked_rectangular]") {
     REQUIRE(i.size() == 0);
 }
 
+TEST_CASE("Create checked_rectangular from initializer list", "[checked_rectangular]") {
+    CR i{3,2, {10, 11, 12, 13, 14, 15}};
+ 
+    REQUIRE(i.height() == 3);
+    REQUIRE(i.width() == 2);
+    REQUIRE(i.at(0,0) == 10);
+    REQUIRE(i.at(0,1) == 11);
+    REQUIRE(i.at(1,0) == 12);
+    REQUIRE(i.at(2,1) == 15);
+}    
+
+TEST_CASE("checked_rectangular initializer_list throws", "[checked_rectangular]") {
+    REQUIRE_THROWS_AS( (CR{2,2, {0,1,2}} ), std::out_of_range);
+    REQUIRE_THROWS_AS( (CR{2,2, {0,1,2,3,4}} ), std::out_of_range);
+}
+
 TEST_CASE("checked_rectangular access", "[checked_rectangular]") {
     CR i{2, 3};
 
