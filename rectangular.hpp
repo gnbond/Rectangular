@@ -62,6 +62,15 @@ class rectangular {
             m_data{il} {
                 if (m_data.size() != height * width) throw std::out_of_range("rectangular create");
         }
+        // Efficiently move a std:vector<> into a rectangular
+        // NB: will erase the argument!
+        rectangular(size_type height, size_type width, std::vector<value_type>& vec) :
+            m_height{height}, m_width{width},
+            m_data{} {
+                if (vec.size() != height * width) throw std::out_of_range("rectangular vector<> create");
+                // Check _then_ destroy the source!
+                m_data.swap(vec);
+        }
 
         // Default dtor/copy/assign/move OK
 

@@ -117,6 +117,7 @@ GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++17| ![Clang / C++17](https://github.
         explicit rectangular(size_t height, size_t width, T value = T());
         template <typename Iter> explicit rectangular(size_t height, size_t width, Iter begin, Iter end); // may throw
         explicit rectangular(size_t height, size_t width, std::initializer_list<T> il); // may throw
+        rectangular(size_type height, size_type width, std::vector<value_type>& vec); // may throw
 
         // Destructor, copy & move constructors and assignment operators are default
 
@@ -153,7 +154,20 @@ GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++17| ![Clang / C++17](https://github.
  ```
     rectangular<int> R{2, 2, {5, 6, 7, 8}};
  ``` 
-
+`rectangular(size_type height, size_type width, std::vector<value_type>& vec)`
+ - Effciently create a `rectagular` by moving the contents of the given `vector` into the newly-constructed `rectangular`.  Contents of the vector are *swapped* with a default-constructed vector, so `vec` is left empty. If the vector does not have exactly (height * width) elements, throw `std::out_of_range`; source vector is untouched in this case.
+ - `value_type` must match between the `rectangular` and the `vector`, else the swap will not compile.
+ - Usage:
+```C++
+    std::vector<int> vec();
+    // fill the vector somehow with exactly 9 entries
+    rectangular<int> R{3,3, vec};
+    // now: vec.size() == 0
+```
+ - NB this alters the vector, If this is not desired, or the value_types do not match, use the iterator range constructor instead:
+```C++
+    rectangular<int> R{3,3, vec.begin(), vec.end());
+```
 
 ### Iterators
 

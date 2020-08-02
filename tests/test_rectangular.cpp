@@ -44,6 +44,28 @@ TEST_CASE("initializer_list throws", "[rectangular]") {
     REQUIRE_THROWS_AS( (R{2,2, {0,1,2,3,4}} ), std::out_of_range);
 }
 
+TEST_CASE("Create from vector", "[rectangular]") {
+    std::vector<unsigned char> vec{10, 11, 12, 13, 14, 15};
+    R i{3,2, vec};
+
+    REQUIRE(i.size() == 6);
+    REQUIRE(i.height() == 3);
+    REQUIRE(i.width() == 2);
+    REQUIRE(i.at(0,0) == 10);
+    REQUIRE(i.at(0,1) == 11);
+    REQUIRE(i.at(1,0) == 12);
+    REQUIRE(i.at(2,1) == 15);
+
+    REQUIRE(vec.size() == 0);
+}
+
+TEST_CASE("Create from vector throws", "[rectangular]") {
+    std::vector<unsigned char> vec{10, 11, 12, 13, 14, 15};
+    REQUIRE_THROWS_AS( (R{2,2, vec} ), std::out_of_range);
+    REQUIRE_THROWS_AS( (R{4,4, vec} ), std::out_of_range);
+    REQUIRE(vec.size() == 6); // Untouched by failed constructor
+}
+
 TEST_CASE("rectangular access", "[rectangular]") {
     R i{2, 3};
 
