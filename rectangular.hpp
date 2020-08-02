@@ -168,17 +168,9 @@ class checked_rectangular : public rectangular<T, Allocator> {
                 ~RowProxy() = default;
                 RefType operator[](size_type x) { return m_rect.at(m_y, x); }
         };
-        
-        checked_rectangular() : Base{} {}
-        explicit checked_rectangular(size_type height, size_type width, 
-                                        value_type value = value_type())
-            : Base(height, width, value) {}
-        // Create from an iterator pair, throw std::out_of_range if not exactly right amount of data
-        template <typename InputIterator>
-        explicit checked_rectangular(size_type height, size_type width, InputIterator b, InputIterator e) 
-            : Base(height, width, b, e) {}
-        explicit checked_rectangular(size_type height, size_type width, std::initializer_list<value_type> il)
-            : Base(height, width, il) {}
+
+        // Inherit all the base class constructors
+        using Base::Base;
 
         // Default dtor/copy/assign/move OK
 

@@ -172,7 +172,7 @@ Iterators are possibly invalidated by `resize()` operation, see below.
  - Change the size and/or shape of the `rectangular` in-place.  
  - If new size() (i.e. new_height * new_width) is less than existing size(), excess elements are destroyed at the back (i.e. starting with `r[height()-1][width()-1]`).  
  - If new size() is greater than existing size(), then new elements are constructed at the back (as if by `std::vector::emplace_back()`) as copies of the given value.
-    - In both these cases, contents may be copied/moved; `end()` iterator will certainly be invalidated and other iterators may also be invaildated.
+    - In both these cases, contents may be copied/moved; `end()` iterator will certainly be invalidated and other iterators may also be invalidated.
  - If new size() equals old size(), no contents are created or destroyed, all existing data is retained but the "shape" of the `rectangular` changes.  No data is copied/moved and this runs in constant time.  Iterators are not invalidated in this case.
 
 ### Accessors
@@ -189,15 +189,18 @@ Const and non-const accessors are provided, accessors of const `rectangular` obj
 
 A `checked_rectangular` IS-A `rectangular` and they can be used interchangably.  `checked_rectangular` overrides the `operator[]()` to return a proxy object so that accesses written as `r[y][x]` will also be bounds-checked and throw `std::out_of_range` if required.
 
-The same constructors as `rectangular` are provided, and the default destructor and copy/move constructor/assignment are used.   All other public members are inherited directly from `rectangular`.
+The constructors of `rectangular` are inherited, and the default destructor and copy/move constructor/assignment are used.   All other public members are inherited directly from `rectangular`.
 
 ### Synopsis
 ```C++
     template <typename T, typename Allocator = std::allocator<T> >
     class checked_rectangular : public rectangular<T, Allocator> {
-        checked_rectangular();
-        explicit checked_rectangular(size_t height, size_t width, T value = T());
-        template <typename Iter> explicit checked_rectangular(size_t height, size_t width, Iter begin, Iter end); // may throw
+
+    public:
+        // Inherit the base class constructors
+        using rectangular<T, Allocator>::rectangular;
+
+        // Destructor, copy & move constructors and assignment operators are default
 
         // Accessor
         Proxy operator[](size_t y);
