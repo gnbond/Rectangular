@@ -1,6 +1,10 @@
 # Rectangular
 
-A simple 2-dimensional container template for C++11 and later.
+A simple 2-dimensional container template for C++.
+
+This is provided in two mostly-compatible versions:
+ - In this directory, a version written in modern style that supports C++11 and up
+ - In the cpp03 directory, a version that supports C++98 and C++03 using more traditional style
 
 This class template wraps a `std::vector<>` to provide a simple, lightweight 2-dimensional dynamic array container that behaves well with other standard library features.  It is implemented as 1 small header file, with a very forgiving licence, that can be just copied into any project, free or commercial.  I needed this for a little project I was working on, and broke it out into a separate project here so it can be simply re-used.
 
@@ -52,15 +56,15 @@ The constructors that use a range to specify the initial contents (iterator or i
  2. Require the user to specify `height` and `width` explicitly, and handle missing / excess elements in the initializer by use of default value if missing or ignoring any excess values.
  3. Require the user to specify the width only, and calculate the height based on the length of the initializer.  This is how native C/C++ 2-D arrays work.  In the case where the number of initializers is not an exact multiple of the width, this can either throw or use default values to make up to a full row.
 
- The `rectangular` class takes the first approach - insist on exactly the right number of initializer elements.  This may be a bit less flexible, but will catch a class of errors that other approaches may paper over.  If client code knows there is the possibility that the initializer length is not correct, then this can be explicitly coded for, something like this (assuming source has RandomAccessIterators):
+ The `rectangular` class takes the first approach - insist on exactly the right number of initializer elements.  This may be a bit less flexible, but will catch a class of errors that other approaches may paper over.  If client code knows there is the possibility that the initializer length is not correct, then this can be explicitly coded for, something like this:
  ```C++
     rectangular<int> r{3, 3, 0};
-    std::copy(source.begin(), std::min(source.end(), source.begin() + r.size()), r.begin());
+    std::copy_n(source.begin(), std::min(source.size(), r.size()), r.begin());
 ```
 
 ## C++ compatibility
 
-These templates work with C++11, C++14 and C++17.  This has been tested on Clang (versions 6, 9 & 10) and g++ (versions 5.4, 8.4 and 9.3) on a variety of hosts (though host OS should really not matter).
+The main version of templates work with C++11, C++14 and C++17.  This has been tested on Clang (versions 6, 9 & 10) and g++ (versions 5.4, 8.4 and 9.3) on a variety of hosts (though host OS should really not matter).
 
 For `checked_rectangular` we would like to prohibit any use of the RowProxy object other than immediate dereference via `[]`.  Mostly, this works as written for C++11 and C++14, but for C++17 the following will actually compile, even though it is an error on C++14.  I think this is because of the changed Copy Elision requirements, see [cppreference.com](https://en.cppreference.com/w/cpp/language/copy_elision):
 
@@ -69,6 +73,7 @@ For `checked_rectangular` we would like to prohibit any use of the RowProxy obje
 
 This causes a false-positive in the `test_nc_checked_proxy.cpp` test, so that test has to be disabled for C++17. Alas, XCode 10 clang supports enough of C++17 to make this compile, but not enough (missing the `__cpp_guaranteed_copy_elision` macro) to work around this problem in the official manner, so the unit test has some Mac-specific knowledge. 
 
+There is a somewhat simpler (and wordier, and uglier) version in the `cpp03` directory that should work with C+98 and C++03, for those stuck on old compilers. This has been tested with Clang (versions 6 and 9) and GCC (version 8.4).
 
 ## Building 
 
@@ -81,7 +86,11 @@ Unit tests are in the `tests` directory.  Tests are written using [Catch2](http:
 
 Filenames starting with `test_` are the unit tests. Filenames starting with `test_nc_` are code snippets that should not compile.  A Makefile is included, and is needed only for the unit tests.   `make check` will compile and run the unit tests and confirm the `test_nc` code does not compile.  Hint: when porting to a new compiler, it's worth manually checking that the `test_nc_` tests fail for the reason expected, not because of some other unexpected system dependency!
 
+The C++03 version cannot be tested with Catch2, as Catch2 only supports C++11.  So the `cpp03` directory contains some simple macros for unit testing and a distinct set of test cases for the C++03 version of `rectangular.hpp`. `make check` works there as well.
+
 ## Test Results
+
+### C++11 version
 
 System | Compiler | C++ standard | Result 
 ------ | -------- | ------------ | ------
@@ -104,6 +113,15 @@ GitHub CI / Ubuntu 18 | g++ 8.4 | -std=c++17| ![GCC / C++17](https://github.com/
 GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++11| ![Clang / C++11](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++11/badge.svg)
 GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++14| ![Clang / C++14](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++14/badge.svg)
 GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++17| ![Clang / C++17](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++17/badge.svg)
+
+### C++03 version
+System | Compiler | C++ standard | Result 
+------ | -------- | ------------ | ------
+MacOs 10.13| XCode 10.0 (Clang 6) | -std=c++98 | Pass
+MacOs 10.13| XCode 10.0 (Clang 6) | -std=c++03 | Pass
+GitHub CI / Ubuntu 18 | g++ 8.4 | -std=c++03| ![GCC / C++03](https://github.com/gnbond/Rectangular/workflows/GCC%20/%20C++03/badge.svg)
+GitHub CI / Ubuntu 18 | clang 9.0 | -std=c++03| ![Clang / C++03](https://github.com/gnbond/Rectangular/workflows/Clang%20/%20C++03/badge.svg)
+
 
 # Class Documentation
 
@@ -231,3 +249,6 @@ Proxy objects should never be stored or used for an purpose other than immediate
 
 Both const and non-const proxy objects are provided, and underlying data of `const checked_rectangular` objects is safe from modification.
 
+## C++03 version
+
+Interface is more or less the same, major API difference is that C++03 does not support `std::initializer_list` constructors or move contructor/assignment.  Copy constructor is private rather than deleted.

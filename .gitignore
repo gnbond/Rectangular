@@ -30,4 +30,5 @@
 *.exe
 *.out
 *.app
-test_rectangular
+tests/test_rectangular
+c++03/test_cpp03
