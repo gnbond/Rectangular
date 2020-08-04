@@ -88,6 +88,8 @@ Filenames starting with `test_` are the unit tests. Filenames starting with `tes
 
 The C++03 version cannot be tested with Catch2, as Catch2 only supports C++11.  So the `cpp03` directory contains some simple macros for unit testing and a distinct set of test cases for the C++03 version of `rectangular.hpp`. `make check` works there as well.
 
+Interesting note:  `decltype()` is a C++11 feature, but XCode 10 clang (purported to be clang 6) accepts it even in C++03 mode, without even a compatibility warning.  Clang 6 (& gcc) in C++03 mode on linux correctly flag this as an error.
+
 ## Test Results
 
 ### C++11 version

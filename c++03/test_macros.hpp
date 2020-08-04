@@ -18,7 +18,7 @@
 #define REQUIRE_THROWS_AS(expr, exc) \
     do { \
         bool has_thrown(false); \
-        std::remove_reference<decltype(expr)>::type _x; \
+        int _x; \
         try { \
             _x = expr; \
         } \

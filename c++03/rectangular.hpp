@@ -75,10 +75,8 @@ class rectangular {
         // Iterate over the data in row-major order
         iterator begin() { return m_data.begin(); }
         iterator end() { return m_data.end(); }
-        const_iterator begin() const { return m_data.cbegin(); }
-        const_iterator end() const { return m_data.cend(); }
-        const_iterator cbegin() const { return m_data.cbegin(); }
-        const_iterator cend() const { return m_data.cend(); }
+        const_iterator begin() const { return m_data.begin(); }
+        const_iterator end() const { return m_data.end(); }
 
         size_type size() const { return m_data.size(); }
         bool empty() const { return m_data.empty(); }
@@ -149,10 +147,9 @@ class checked_rectangular : public rectangular<T, Allocator> {
          * For the non-const case, Rect = checked_rectangular and RefType = Rect::reference (aka T&)
          * For the const case, Rect = const checked_rectangular and RefType = Rect::const_reference (aka const T&)
          */
-        template <typename Rect>
+        template <typename Rect, typename RefType>
         class RowProxy {
                 friend class checked_rectangular; // so it can call private constructor
-                typedef decltype(Rect(1,1).at(0,0)) RefType;
                 typedef typename Rect::size_type size_type;
             private:
                 Rect& m_rect;
@@ -182,9 +179,9 @@ class checked_rectangular : public rectangular<T, Allocator> {
 
         // Default dtor/copy/assign/move OK
 
-        RowProxy<Base> operator[](size_type y) { return RowProxy<Base>(*this, y); }
-        RowProxy<const Base> operator[](size_type y) const {
-            return RowProxy<const Base>(*this, y);
+        RowProxy<Base, typename Base::reference> operator[](size_type y) { return RowProxy<Base, typename Base::reference>(*this, y); }
+        RowProxy<const Base, typename Base::const_reference> operator[](size_type y) const {
+            return RowProxy<const Base, typename Base::const_reference>(*this, y);
         }
 };
 
