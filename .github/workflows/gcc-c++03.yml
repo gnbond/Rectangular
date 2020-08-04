@@ -14,5 +14,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make GCC/C++03 check
-      run: make -C cpp03 CXX=g++-8 CXXSTD=c++03 check
+      run: make -C c++03 CXX=g++-8 CXXSTD=c++03 check
     
