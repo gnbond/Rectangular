@@ -4,7 +4,7 @@ A simple 2-dimensional container template for C++.
 
 This is provided in two mostly-compatible versions:
  - In this directory, a version written in modern style that supports C++11 and up
- - In the cpp03 directory, a version that supports C++98 and C++03 using more traditional style
+ - In the c++03 directory, a version that supports C++98 and C++03 using more traditional style
 
 This class template wraps a `std::vector<>` to provide a simple, lightweight 2-dimensional dynamic array container that behaves well with other standard library features.  It is implemented as 1 small header file, with a very forgiving licence, that can be just copied into any project, free or commercial.  I needed this for a little project I was working on, and broke it out into a separate project here so it can be simply re-used.
 
@@ -73,7 +73,7 @@ For `checked_rectangular` we would like to prohibit any use of the RowProxy obje
 
 This causes a false-positive in the `test_nc_checked_proxy.cpp` test, so that test has to be disabled for C++17. Alas, XCode 10 clang supports enough of C++17 to make this compile, but not enough (missing the `__cpp_guaranteed_copy_elision` macro) to work around this problem in the official manner, so the unit test has some Mac-specific knowledge. 
 
-There is a somewhat simpler (and wordier, and uglier) version in the `cpp03` directory that should work with C+98 and C++03, for those stuck on old compilers. This has been tested with Clang (versions 6 and 9) and GCC (version 8.4).
+There is a somewhat simpler (and wordier, and uglier) version in the `c++03` directory that should work with C++98 and C++03, for those stuck on old compilers. This has been tested with Clang (versions 6 and 9) and GCC (version 8.4).
 
 ## Building 
 
@@ -82,11 +82,15 @@ This is a single header file containing class templates, no code to be compiled 
 
 ## Unit testing
 
+### C++11 version
+
 Unit tests are in the `tests` directory.  Tests are written using [Catch2](http://catch-lib.net/) test framework, which is a single (large!! 650k) header file.  The `catch.hpp` file is included directly in this project (and makes up 98% of the linecount).  One downside is that the `test_main.o` file can take a long time to compile (500Mb process size, 30-60 CPU seconds), so take care if you are running the tests inside a smallish Docker container.
 
 Filenames starting with `test_` are the unit tests. Filenames starting with `test_nc_` are code snippets that should not compile.  A Makefile is included, and is needed only for the unit tests.   `make check` will compile and run the unit tests and confirm the `test_nc` code does not compile.  Hint: when porting to a new compiler, it's worth manually checking that the `test_nc_` tests fail for the reason expected, not because of some other unexpected system dependency!
 
-The C++03 version cannot be tested with Catch2, as Catch2 only supports C++11.  So the `cpp03` directory contains some simple macros for unit testing and a distinct set of test cases for the C++03 version of `rectangular.hpp`. `make check` works there as well.
+### C++03 version
+
+The C++03 version cannot be tested with Catch2, as Catch2 only supports C++11.  So the `c++03` directory contains some simple macros for unit testing and a distinct set of test cases for the C++03 version of `rectangular.hpp`. `make check` works there as well.
 
 Interesting note:  `decltype()` is a C++11 feature, but XCode 10 clang (purported to be clang 6) accepts it even in C++03 mode, without even a compatibility warning.  Clang 6 (& gcc) in C++03 mode on linux correctly flag this as an error.
 
@@ -253,4 +257,8 @@ Both const and non-const proxy objects are provided, and underlying data of `con
 
 ## C++03 version
 
-Interface is more or less the same, major API difference is that C++03 does not support `std::initializer_list` constructors or move contructor/assignment.  Copy constructor is private rather than deleted.
+The interface for the C++03 version is more or less the same.  Notable differences are:
+- C++03 does not support `std::initializer_list` constructors 
+- C++03 does not support move contructor/assignment
+- C++03 `std::vector<>` does not support `cbegin()` and `cend()`
+- The `RowProxy` class in `checked_rectangular` is wordier and clumsier, and offers less protection against dangling references.

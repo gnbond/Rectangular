@@ -9,6 +9,8 @@
  *
  * For more information, please see the associated LICENSE file or refer to <https://unlicense.org>
  * 
+ * This version for C++11 and later.  Version for C++98 or C++03 available separately.
+ *
  * Bugs/Comments/Pull requests to https://github.com/gnbond/Rectangular
  */
 
