@@ -121,25 +121,13 @@ TEST_CASE("checked_rectangular swap", "[checked_rectangular]") {
 
     REQUIRE(x.size() == 4);
     REQUIRE(y.size() == 0);
+    REQUIRE(x.invariants());
+    REQUIRE(y.invariants());
 
     std::swap(x, y);
 
     REQUIRE(x.size() == 0);
     REQUIRE(y.size() == 4);
-
-}
-
-TEST_CASE("rchecked_ectangular move", "[checked_rectangular]") {
-    CR x{2,3};
-    CR y{0,0};
-
-    REQUIRE(x.size() == 6);
-    REQUIRE(y.size() == 0);
-
-    y = std::move(x);
-
-    REQUIRE(x.size() == 0);
-    REQUIRE(y.size() == 6);
-    REQUIRE(y.height() == 2);
-    REQUIRE(y.width() == 3);
+    REQUIRE(x.invariants());
+    REQUIRE(y.invariants());
 }

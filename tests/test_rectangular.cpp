@@ -169,30 +169,19 @@ TEST_CASE("iterator create throws", "[rectangular]") {
 }
 
 TEST_CASE("rectangular swap", "[rectangular]") {
-    R x{2,2};
-    R y;
-
-    REQUIRE(x.size() == 4);
-    REQUIRE(y.size() == 0);
-
-    std::swap(x, y);
-
-    REQUIRE(x.size() == 0);
-    REQUIRE(y.size() == 4);
-
-}
-
-TEST_CASE("rectangular move", "[rectangular]") {
     R x{2,3};
     R y;
 
     REQUIRE(x.size() == 6);
     REQUIRE(y.size() == 0);
 
-    y = std::move(x);
+    std::swap(x, y);
 
     REQUIRE(x.size() == 0);
     REQUIRE(y.size() == 6);
     REQUIRE(y.height() == 2);
     REQUIRE(y.width() == 3);
-}
+    REQUIRE(x.invariants());
+    REQUIRE(y.invariants());
+}   
+

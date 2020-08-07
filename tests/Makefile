@@ -6,7 +6,9 @@ CXXFLAGS += -MMD
 check: test_rectangular test_nocompile
 	@./test_rectangular
 
-TEST_OBJS=test_main.o test_rectangular.o test_checked_rectangular.o test_rectangular_iterator.o
+TEST_OBJS=test_main.o test_rectangular.o test_checked_rectangular.o \
+	test_rectangular_iterator.o test_copy_move.o
+
 test_rectangular: $(TEST_OBJS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $(TEST_OBJS)
 

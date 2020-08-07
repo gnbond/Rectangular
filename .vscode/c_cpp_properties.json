@@ -10,7 +10,9 @@
                 "/System/Library/Frameworks",
                 "/Library/Frameworks"
             ],
-            "compilerPath": "/usr/bin/clang"
+            "compilerPath": "/usr/bin/clang",
+            "cppStandard": "c++17",
+            "cStandard": "c18"
         }
     ],
     "version": 4

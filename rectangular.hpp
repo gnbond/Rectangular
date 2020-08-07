@@ -74,7 +74,14 @@ class rectangular {
                 m_data.swap(vec);
         }
 
-        // Default dtor/copy/assign/move OK
+        // Default dtor/copy/assign OK
+        ~rectangular() = default;
+        rectangular(const rectangular&) = default;
+        rectangular& operator=(const rectangular&) = default;
+
+        // Move ctor/assign need help to maintain invariants
+        rectangular(rectangular&& r) :  m_height{0}, m_width{0}, m_data{} { swap(r); }
+        rectangular& operator=(rectangular&& r) { swap(r); return *this; }
 
         // Iterate over the data in row-major order
         iterator begin() { return m_data.begin(); }
@@ -125,9 +132,13 @@ class rectangular {
 
         void swap(rectangular& r) {
             std::swap(m_height, r.m_height);
-            std::swap(m_width, r.m_height);
+            std::swap(m_width, r.m_width);
             std::swap(m_data, r.m_data);
         }
+
+        // Check invariants, mainly for unit tests
+        bool invariants() const { return height() * width() == size(); }
+
     private:
         size_type m_height, m_width;
         BaseType m_data;
